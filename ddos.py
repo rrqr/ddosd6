@@ -31,7 +31,7 @@ stop_attack_event = threading.Event()
 Owner = ['6358035274']
 
 # قائمة المستخدمين العاديين
-NormalUsers = []
+NormalUsers = ['5708651947']
 
 # قراءة القوائم من الملفات
 def load_lists():
