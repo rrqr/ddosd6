@@ -1,2 +1,2 @@
-telebot
+tele-bot
 python-telegram-bot
