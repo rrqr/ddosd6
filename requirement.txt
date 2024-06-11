@@ -1,4 +1,4 @@
-install telebot
-my-telebot
-tele-bot
+pyTelegramBotAPI
+git+https://github.com/eternnoir/pyTelegramBotAPI.git
+pytelegrambotapi --upgrade
 python-telegram-bot
