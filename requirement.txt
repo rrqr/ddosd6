@@ -1,4 +1,4 @@
-pip install telebot
+install telebot
 my-telebot
 tele-bot
 python-telegram-bot
