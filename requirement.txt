@@ -1,4 +1,4 @@
 pyTelegramBotAPI
 git+https://github.com/eternnoir/pyTelegramBotAPI.git
-pytelegrambotapi --upgrade
+pytelegrambotapi
 python-telegram-bot
